@@ -1,5 +1,8 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
 
 public class MusicPlayerGUI extends JFrame {
     public static final Color FRAME_COLOR = Color.BLACK;
@@ -25,6 +28,10 @@ public class MusicPlayerGUI extends JFrame {
 
     private void addGuiComponents(){
         addToolBar();
+
+        JLabel songImage = new JLabel(loadImage("src/images/record.jpg"));
+        songImage.setBounds(0, 50, getWidth() - 20, 225);
+        add(songImage);
     }
 
     private void addToolBar(){
@@ -55,5 +62,17 @@ public class MusicPlayerGUI extends JFrame {
         playlistMenu.add(loadPLaylist);
 
         add(toolBar);
+    }
+
+    private ImageIcon loadImage(String imagePath){
+        try{
+            BufferedImage image = ImageIO.read(new File(imagePath));
+            return new ImageIcon(image);
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }
