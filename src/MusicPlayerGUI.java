@@ -32,6 +32,25 @@ public class MusicPlayerGUI extends JFrame {
         JLabel songImage = new JLabel(loadImage("src/images/record.jpg"));
         songImage.setBounds(0, 50, getWidth() - 20, 225);
         add(songImage);
+
+        JLabel songTitle = new JLabel("Song Title");
+        songTitle.setBounds(0, 285, getWidth() - 10, 30);
+        songTitle.setFont(new Font("Arial", Font.BOLD, 24));
+        songTitle.setForeground(TEXT_COLOR);
+        songTitle.setHorizontalAlignment(SwingConstants.CENTER);
+        add(songTitle);
+
+        JLabel songArtist = new JLabel("Artist");
+        songArtist.setBounds(0, 315, getWidth() - 10, 30);
+        songArtist.setFont(new Font("Arial", Font.PLAIN, 24));
+        songArtist.setForeground(TEXT_COLOR);
+        songArtist.setHorizontalAlignment(SwingConstants.CENTER);
+        add(songArtist);
+
+        JSlider playbackSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, 0);
+        playbackSlider.setBounds(getWidth()/2 - 300/2, 365, 300, 40);
+        playbackSlider.setBackground(null);
+        add(playbackSlider);
     }
 
     private void addToolBar(){
