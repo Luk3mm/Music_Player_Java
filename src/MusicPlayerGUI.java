@@ -51,6 +51,8 @@ public class MusicPlayerGUI extends JFrame {
         playbackSlider.setBounds(getWidth()/2 - 300/2, 365, 300, 40);
         playbackSlider.setBackground(null);
         add(playbackSlider);
+
+        addPlaybackButtons();
     }
 
     private void addToolBar(){
@@ -81,6 +83,34 @@ public class MusicPlayerGUI extends JFrame {
         playlistMenu.add(loadPLaylist);
 
         add(toolBar);
+    }
+
+    private void addPlaybackButtons(){
+        JPanel playbackButtons = new JPanel();
+        playbackButtons.setBounds(0, 435, getWidth() - 10, 80);
+        playbackButtons.setBackground(null);
+
+        JButton prevButton = new JButton(loadImage("src/images/prev.png"));
+        prevButton.setBorderPainted(false);
+        prevButton.setBackground(null);
+        playbackButtons.add(prevButton);
+
+        JButton playButton = new JButton(loadImage("src/images/play.png"));
+        playButton.setBorderPainted(false);
+        playButton.setBackground(null);
+        playbackButtons.add(playButton);
+
+        JButton pauseButton = new JButton(loadImage("src/images/pause.png"));
+        pauseButton.setBorderPainted(false);
+        pauseButton.setBackground(null);
+        playbackButtons.add(pauseButton);
+
+        JButton nextButton = new JButton(loadImage("src/images/next.png"));
+        nextButton.setBorderPainted(false);
+        nextButton.setBackground(null);
+        playbackButtons.add(nextButton);
+
+        add(playbackButtons);
     }
 
     private ImageIcon loadImage(String imagePath){
