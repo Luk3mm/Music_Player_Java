@@ -103,6 +103,7 @@ public class MusicPlayerGUI extends JFrame {
         JButton pauseButton = new JButton(loadImage("src/images/pause.png"));
         pauseButton.setBorderPainted(false);
         pauseButton.setBackground(null);
+        pauseButton.setVisible(false);
         playbackButtons.add(pauseButton);
 
         JButton nextButton = new JButton(loadImage("src/images/next.png"));
