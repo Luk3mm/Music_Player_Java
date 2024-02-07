@@ -24,9 +24,25 @@ public class MusicPlayer {
             BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
 
             advancedPlayer = new AdvancedPlayer(bufferedInputStream);
+
+            startMusicThread();
         }
         catch(Exception e){
             e.printStackTrace();
         }
+    }
+
+    private void startMusicThread(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try{
+                    advancedPlayer.play();
+                }
+                catch(Exception e){
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 }

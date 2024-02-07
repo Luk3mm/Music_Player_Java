@@ -1,12 +1,16 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
 public class MusicPlayerGUI extends JFrame {
     public static final Color FRAME_COLOR = Color.BLACK;
     public static final Color TEXT_COLOR = Color.WHITE;
+    private MusicPlayer musicPlayer;
+    private JFileChooser jFileChooser;
 
     public MusicPlayerGUI(){
         super("Luke Player");
@@ -22,6 +26,9 @@ public class MusicPlayerGUI extends JFrame {
         setLayout(null);
 
         getContentPane().setBackground(FRAME_COLOR);
+
+        jFileChooser = new JFileChooser();
+        jFileChooser.setCurrentDirectory(new File("src/songs"));
 
         addGuiComponents();
     }
@@ -70,6 +77,19 @@ public class MusicPlayerGUI extends JFrame {
 
         //Load Song in SongBar
         JMenuItem loadSong = new JMenuItem("Load Song");
+        loadSong.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                jFileChooser.showOpenDialog(MusicPlayerGUI.this);
+                File selectFile = jFileChooser.getSelectedFile();
+
+                if(selectFile != null){
+                    Song song = new Song(selectFile.getPath());
+
+                    musicPlayer.loadSong(song);
+                }
+            }
+        });
         songMenu.add(loadSong);
 
         //Playlist
