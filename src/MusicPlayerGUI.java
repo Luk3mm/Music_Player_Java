@@ -1,5 +1,6 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -34,6 +35,7 @@ public class MusicPlayerGUI extends JFrame {
 
         jFileChooser = new JFileChooser();
         jFileChooser.setCurrentDirectory(new File("src/songs"));
+        jFileChooser.setFileFilter(new FileNameExtensionFilter("MP3", "mp3"));
 
         addGuiComponents();
     }
@@ -85,10 +87,10 @@ public class MusicPlayerGUI extends JFrame {
         loadSong.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                jFileChooser.showOpenDialog(MusicPlayerGUI.this);
+                int result = jFileChooser.showOpenDialog(MusicPlayerGUI.this);
                 File selectFile = jFileChooser.getSelectedFile();
 
-                if(selectFile != null){
+                if(result == JFileChooser.APPROVE_OPTION && selectFile != null){
                     Song song = new Song(selectFile.getPath());
 
                     musicPlayer.loadSong(song);
@@ -133,6 +135,14 @@ public class MusicPlayerGUI extends JFrame {
         pauseButton.setBorderPainted(false);
         pauseButton.setBackground(null);
         pauseButton.setVisible(false);
+        pauseButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                enablePlayButtonDisablePauseButton();
+
+                musicPlayer.pauseSong();
+            }
+        });
         playbackButtons.add(pauseButton);
 
         JButton nextButton = new JButton(loadImage("src/images/next.png"));

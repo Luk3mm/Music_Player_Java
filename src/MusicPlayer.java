@@ -1,11 +1,14 @@
 import javazoom.jl.player.advanced.AdvancedPlayer;
+import javazoom.jl.player.advanced.PlaybackEvent;
+import javazoom.jl.player.advanced.PlaybackListener;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 
-public class MusicPlayer {
+public class MusicPlayer extends PlaybackListener {
     private Song currentSong;
     private AdvancedPlayer advancedPlayer;
+    private boolean isPaused;
 
     public MusicPlayer(){
 
@@ -18,12 +21,29 @@ public class MusicPlayer {
         }
     }
 
+    public void pauseSong(){
+        if(advancedPlayer != null){
+            isPaused = true;
+
+            stopSong();
+        }
+    }
+
+    public void stopSong(){
+        if(advancedPlayer != null){
+            advancedPlayer.stop();
+            advancedPlayer.close();
+            advancedPlayer = null;
+        }
+    }
+
     public void playCurrentSong(){
         try{
             FileInputStream fileInputStream = new FileInputStream(currentSong.getFilePath());
             BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
 
             advancedPlayer = new AdvancedPlayer(bufferedInputStream);
+            advancedPlayer.setPlayBackListener(this);
 
             startMusicThread();
         }
@@ -44,5 +64,15 @@ public class MusicPlayer {
                 }
             }
         }).start();
+    }
+
+    @Override
+    public void playbackStarted(PlaybackEvent evt) {
+        System.out.println("Started");
+    }
+
+    @Override
+    public void playbackFinished(PlaybackEvent evt) {
+        System.out.println("Finish");
     }
 }
