@@ -11,6 +11,9 @@ public class MusicPlayerGUI extends JFrame {
     public static final Color TEXT_COLOR = Color.WHITE;
     private MusicPlayer musicPlayer;
     private JFileChooser jFileChooser;
+    private JLabel songTitle, songArtist;
+    private JPanel playbackButtons;
+
 
     public MusicPlayerGUI(){
         super("Luke Player");
@@ -27,6 +30,8 @@ public class MusicPlayerGUI extends JFrame {
 
         getContentPane().setBackground(FRAME_COLOR);
 
+        musicPlayer = new MusicPlayer();
+
         jFileChooser = new JFileChooser();
         jFileChooser.setCurrentDirectory(new File("src/songs"));
 
@@ -40,14 +45,14 @@ public class MusicPlayerGUI extends JFrame {
         songImage.setBounds(0, 50, getWidth() - 20, 225);
         add(songImage);
 
-        JLabel songTitle = new JLabel("Song Title");
+        songTitle = new JLabel("Song Title");
         songTitle.setBounds(0, 285, getWidth() - 10, 30);
         songTitle.setFont(new Font("Arial", Font.BOLD, 24));
         songTitle.setForeground(TEXT_COLOR);
         songTitle.setHorizontalAlignment(SwingConstants.CENTER);
         add(songTitle);
 
-        JLabel songArtist = new JLabel("Artist");
+        songArtist = new JLabel("Artist");
         songArtist.setBounds(0, 315, getWidth() - 10, 30);
         songArtist.setFont(new Font("Arial", Font.PLAIN, 24));
         songArtist.setForeground(TEXT_COLOR);
@@ -87,6 +92,10 @@ public class MusicPlayerGUI extends JFrame {
                     Song song = new Song(selectFile.getPath());
 
                     musicPlayer.loadSong(song);
+
+                    updateSongTitleSongArtist(song);
+
+                    enablePauseButtonDisablePlayButton();
                 }
             }
         });
@@ -106,7 +115,7 @@ public class MusicPlayerGUI extends JFrame {
     }
 
     private void addPlaybackButtons(){
-        JPanel playbackButtons = new JPanel();
+        playbackButtons = new JPanel();
         playbackButtons.setBounds(0, 435, getWidth() - 10, 80);
         playbackButtons.setBackground(null);
 
@@ -132,6 +141,31 @@ public class MusicPlayerGUI extends JFrame {
         playbackButtons.add(nextButton);
 
         add(playbackButtons);
+    }
+
+    private void updateSongTitleSongArtist(Song song){
+        songTitle.setText(song.getSongTitle());
+        songArtist.setText(song.getArtist());
+    }
+
+    private void enablePauseButtonDisablePlayButton(){
+        JButton playButton = (JButton) playbackButtons.getComponent(1);
+        JButton pauseButton = (JButton) playbackButtons.getComponent(2);
+
+        playButton.setVisible(false);
+        playButton.setEnabled(false);
+        pauseButton.setVisible(true);
+        pauseButton.setEnabled(true);
+    }
+
+    private void enablePlayButtonDisablePauseButton(){
+        JButton playButton = (JButton) playbackButtons.getComponent(1);
+        JButton pauseButton = (JButton) playbackButtons.getComponent(2);
+
+        playButton.setVisible(true);
+        playButton.setEnabled(true);
+        pauseButton.setVisible(false);
+        pauseButton.setEnabled(false);
     }
 
     private ImageIcon loadImage(String imagePath){
