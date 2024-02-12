@@ -9,6 +9,7 @@ public class MusicPlayer extends PlaybackListener {
     private Song currentSong;
     private AdvancedPlayer advancedPlayer;
     private boolean isPaused;
+    private int currentFrame; //for catch moment pause
 
     public MusicPlayer(){
 
@@ -38,6 +39,8 @@ public class MusicPlayer extends PlaybackListener {
     }
 
     public void playCurrentSong(){
+        if(currentSong == null) return;
+
         try{
             FileInputStream fileInputStream = new FileInputStream(currentSong.getFilePath());
             BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
@@ -57,7 +60,12 @@ public class MusicPlayer extends PlaybackListener {
             @Override
             public void run() {
                 try{
-                    advancedPlayer.play();
+                    if(isPaused){
+                        advancedPlayer.play(currentFrame, Integer.MAX_VALUE);
+                    }
+                    else{
+                        advancedPlayer.play();
+                    }
                 }
                 catch(Exception e){
                     e.printStackTrace();
@@ -74,5 +82,9 @@ public class MusicPlayer extends PlaybackListener {
     @Override
     public void playbackFinished(PlaybackEvent evt) {
         System.out.println("Finish");
+
+        if(isPaused){
+            currentFrame += (int) ((double) evt.getFrame() * currentSong.getFrameRateMilliseconds());
+        }
     }
 }
