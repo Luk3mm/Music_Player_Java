@@ -6,13 +6,15 @@ import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 
 public class MusicPlayer extends PlaybackListener {
+    private MusicPlayerGUI musicPlayerGUI;
     private Song currentSong;
     private AdvancedPlayer advancedPlayer;
     private boolean isPaused;
     private int currentFrame; //for catch moment pause
+    private int currentTimeInMillisecond;
 
-    public MusicPlayer(){
-
+    public MusicPlayer(MusicPlayerGUI musicPlayerGUI){
+        this.musicPlayerGUI = musicPlayerGUI;
     }
     public void loadSong(Song song){
         currentSong = song;
@@ -49,6 +51,8 @@ public class MusicPlayer extends PlaybackListener {
             advancedPlayer.setPlayBackListener(this);
 
             startMusicThread();
+
+            startPlaybackSliderThread();
         }
         catch(Exception e){
             e.printStackTrace();
@@ -69,6 +73,28 @@ public class MusicPlayer extends PlaybackListener {
                 }
                 catch(Exception e){
                     e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    private void startPlaybackSliderThread(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while(!isPaused){
+                    try{
+                        currentTimeInMillisecond++;
+
+                        int calculateFrame = (int) ((double) currentTimeInMillisecond * currentSong.getFrameRateMilliseconds());
+
+                        musicPlayerGUI.setPlaybackSliderValue(calculateFrame);
+
+                        Thread.sleep(1);
+                    }
+                    catch(Exception e){
+                        e.printStackTrace();
+                    }
                 }
             }
         }).start();
