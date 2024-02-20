@@ -2,8 +2,8 @@ import javazoom.jl.player.advanced.AdvancedPlayer;
 import javazoom.jl.player.advanced.PlaybackEvent;
 import javazoom.jl.player.advanced.PlaybackListener;
 
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
+import java.io.*;
+import java.util.ArrayList;
 
 public class MusicPlayer extends PlaybackListener {
     private static final Object playSignal = new Object();
@@ -12,6 +12,7 @@ public class MusicPlayer extends PlaybackListener {
     public Song getCurrentSong(){
         return currentSong;
     }
+    private ArrayList<Song> playlist;
     private AdvancedPlayer advancedPlayer;
     private boolean isPaused;
     private int currentFrame; //for catch moment pause
@@ -30,6 +31,37 @@ public class MusicPlayer extends PlaybackListener {
         currentSong = song;
 
         if(currentSong != null){
+            playCurrentSong();
+        }
+    }
+
+    public void loadPlaylist(File playlistFile){
+        playlist = new ArrayList<>();
+
+        try{
+            FileReader fileReader = new FileReader(playlistFile);
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+
+            String songPath;
+            while((songPath = bufferedReader.readLine()) != null){
+                Song song = new Song(songPath);
+                playlist.add(song);
+            }
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
+        if(playlist.size() > 0){
+            musicPlayerGUI.setPlaybackSliderValue(0);
+            currentTimeInMillisecond = 0;
+
+            currentSong = playlist.get(0);
+            currentFrame = 0;
+
+            musicPlayerGUI.enablePauseButtonDisablePlayButton();
+            musicPlayerGUI.updateSongTitleSongArtist(currentSong);
+            musicPlayerGUI.updatePlaybackSlider(currentSong);
             playCurrentSong();
         }
     }
