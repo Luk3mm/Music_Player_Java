@@ -8,7 +8,7 @@ import java.io.File;
 import java.util.Hashtable;
 
 public class MusicPlayerGUI extends JFrame {
-    public static final Color FRAME_COLOR = Color.BLACK;
+    public static final Color FRAME_COLOR = Color.DARK_GRAY;
     public static final Color TEXT_COLOR = Color.WHITE;
     private MusicPlayer musicPlayer;
     private JFileChooser jFileChooser;
@@ -167,6 +167,12 @@ public class MusicPlayerGUI extends JFrame {
         JButton prevButton = new JButton(loadImage("src/images/prev.png"));
         prevButton.setBorderPainted(false);
         prevButton.setBackground(null);
+        prevButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                musicPlayer.prevSong();
+            }
+        });
         playbackButtons.add(prevButton);
 
         JButton playButton = new JButton(loadImage("src/images/play.png"));
@@ -199,6 +205,12 @@ public class MusicPlayerGUI extends JFrame {
         JButton nextButton = new JButton(loadImage("src/images/next.png"));
         nextButton.setBorderPainted(false);
         nextButton.setBackground(null);
+        nextButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                musicPlayer.nextSong();
+            }
+        });
         playbackButtons.add(nextButton);
 
         add(playbackButtons);

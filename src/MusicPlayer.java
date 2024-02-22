@@ -13,8 +13,11 @@ public class MusicPlayer extends PlaybackListener {
         return currentSong;
     }
     private ArrayList<Song> playlist;
+    private int currentPlaylistIndex;
     private AdvancedPlayer advancedPlayer;
     private boolean isPaused;
+    private boolean songFinished;
+    private boolean pressedNext, pressedPrev;
     private int currentFrame; //for catch moment pause
     public void setCurrentFrame(int frame){
         currentFrame = frame;
@@ -29,8 +32,17 @@ public class MusicPlayer extends PlaybackListener {
     }
     public void loadSong(Song song){
         currentSong = song;
+        playlist = null;
+
+        if(!songFinished){
+            stopSong();
+        }
 
         if(currentSong != null){
+            currentFrame = 0;
+            currentTimeInMillisecond = 0;
+            musicPlayerGUI.setPlaybackSliderValue(0);
+
             playCurrentSong();
         }
     }
@@ -80,6 +92,52 @@ public class MusicPlayer extends PlaybackListener {
             advancedPlayer.close();
             advancedPlayer = null;
         }
+    }
+
+    public void nextSong(){
+        if(playlist == null) return;
+
+        if(currentPlaylistIndex + 1 > playlist.size() -1) return;
+
+        pressedNext = true;
+
+        if(!songFinished){
+            stopSong();
+        }
+
+        currentPlaylistIndex++;
+        currentSong = playlist.get(currentPlaylistIndex);
+        currentFrame = 0;
+        currentTimeInMillisecond = 0;
+
+        musicPlayerGUI.enablePauseButtonDisablePlayButton();
+        musicPlayerGUI.updateSongTitleSongArtist(currentSong);
+        musicPlayerGUI.updatePlaybackSlider(currentSong);
+
+        playCurrentSong();
+    }
+
+    public void prevSong(){
+        if(playlist == null) return;
+
+        if(currentPlaylistIndex - 1 < 0) return;
+
+        pressedPrev = true;
+
+        if(!songFinished){
+            stopSong();
+        }
+
+        currentPlaylistIndex--;
+        currentSong = playlist.get(currentPlaylistIndex);
+        currentFrame = 0;
+        currentTimeInMillisecond = 0;
+
+        musicPlayerGUI.enablePauseButtonDisablePlayButton();
+        musicPlayerGUI.updateSongTitleSongArtist(currentSong);
+        musicPlayerGUI.updatePlaybackSlider(currentSong);
+
+        playCurrentSong();
     }
 
     public void playCurrentSong(){
@@ -141,7 +199,7 @@ public class MusicPlayer extends PlaybackListener {
                     }
                 }
 
-                while(!isPaused){
+                while(!isPaused && !songFinished && !pressedNext && !pressedPrev){
                     try{
                         currentTimeInMillisecond++;
 
@@ -162,6 +220,9 @@ public class MusicPlayer extends PlaybackListener {
     @Override
     public void playbackStarted(PlaybackEvent evt) {
         System.out.println("Started");
+        songFinished = false;
+        pressedNext = false;
+        pressedPrev = false;
     }
 
     @Override
@@ -170,6 +231,23 @@ public class MusicPlayer extends PlaybackListener {
 
         if(isPaused){
             currentFrame += (int) ((double) evt.getFrame() * currentSong.getFrameRateMilliseconds());
+        }
+        else{
+            if(pressedNext || pressedPrev) return;
+
+            songFinished = true;
+
+            if(playlist == null){
+                musicPlayerGUI.enablePlayButtonDisablePauseButton();
+            }
+            else{
+                if(currentPlaylistIndex == playlist.size() - 1){
+                    musicPlayerGUI.enablePlayButtonDisablePauseButton();
+                }
+                else{
+                    nextSong();
+                }
+            }
         }
     }
 }
